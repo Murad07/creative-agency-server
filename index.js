@@ -28,7 +28,17 @@ client.connect(err => {
     const ordersCollection = client.db("creativeAgency").collection("orders");
     const servicesCollection = client.db("creativeAgency").collection("services");
     const reviewsCollection = client.db("creativeAgency").collection("reviews");
+    const adminsCollection = client.db("creativeAgency").collection("admins");
 
+
+    // Add a new Admin
+    app.post('/addAdmin', (req, res) => {
+        const admin = req.body;
+        adminsCollection.insertOne(admin)
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
+    });
     
     // Add a new Review
     app.post('/addReview', (req, res) => {
