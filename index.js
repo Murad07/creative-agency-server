@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const { json } = require('express');
 const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config()
 
@@ -66,7 +67,7 @@ client.connect(err => {
             })
     })
 
-    
+
     // Add a new Order
     app.post('/addOrder', (req, res) => {
         const name = req.body.name;
@@ -93,10 +94,6 @@ client.connect(err => {
             })
     });
 
-    // Show all Orders
-    // app.get('/orders', (req, res) => {
-        
-    // })
 
     // Add new Service
     app.post('/addService', (req, res) => {
@@ -121,6 +118,26 @@ client.connect(err => {
                 res.send(result.insertedCount > 0);
             })
     })
+
+    // Show specifiq user orders
+    app.get('/servicesList/:email', (req, res) => {
+    ordersCollection
+      .find({ email: req.params.email })
+      .toArray((err, documents) => {
+        res.send(documents);
+      });
+  });
+
+  // Show specifiq user orders by service name
+    app.get('/orderByName', (req, res) => {
+        const title = req.query.title;
+        servicesCollection
+        .find({ title:  { $regex: title }})
+        .toArray((err, documents) => {
+            res.send(documents[0]);
+        });
+  });
+    
 
     // Show all Services
     app.get('/services', (req, res) => {
