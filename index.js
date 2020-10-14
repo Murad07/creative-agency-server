@@ -39,6 +39,15 @@ client.connect(err => {
                 res.send(result.insertedCount > 0)
             })
     });
+
+    // Check is Admin or not
+    app.post('/isAdmin', (req, res) => {
+        const email = req.body.email;
+        adminsCollection.find({ email: email })
+            .toArray((err, admins) => {
+                res.send(admins.length > 0);
+            })
+    })
     
     // Add a new Review
     app.post('/addReview', (req, res) => {
@@ -75,24 +84,35 @@ client.connect(err => {
             })
     })
 
-    // app.post('/appointmentsByDate', (req, res) => {
-    //     const date = req.body;
-    //     const email = req.body.email;
-    //     doctorCollection.find({ email: email })
-    //         .toArray((err, doctors) => {
-    //             const filter = { date: date.date }
-    //             if (doctors.length === 0) {
-    //                 filter.email = email;
-    //             }
-    //             appointmentCollection.find(filter)
-    //                 .toArray((err, documents) => {
-    //                     console.log(email, date.date, doctors, documents)
-    //                     res.send(documents);
-    //                 })
-    //         })
-    // })
+    // Add new Service
+    app.post('/addService', (req, res) => {
+        const file = req.files.file;
+        const title = req.body.title;
+        const description = req.body.description;
+        
+        const newImg = file.data;
+        const encImg = newImg.toString('base64');
 
-    
+        var img = {
+            contentType: req.files.file.mimetype,
+            size: req.files.file.size,
+            img: Buffer.from(encImg, 'base64')
+        };
+
+        servicesCollection.insertOne({ title, description, img })
+            .then(result => {
+                res.send(result.insertedCount > 0);
+            })
+    })
+
+    // Show all Services
+    app.get('/services', (req, res) => {
+        servicesCollection.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
 
 });
 
