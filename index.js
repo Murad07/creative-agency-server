@@ -69,35 +69,52 @@ client.connect(err => {
     
     // Add a new Order
     app.post('/addOrder', (req, res) => {
-        const order = req.body;
-        ordersCollection.insertOne(order)
+        const name = req.body.name;
+        const email = req.body.email;
+        const serviceName = req.body.serviceName;
+        const description = req.body.description;
+        const price = req.body.price;
+        
+        if(req.files){
+            const file = req.files.file;
+            const newImg = file.data;
+            const encImg = newImg.toString('base64');
+
+            var img = {
+                contentType: req.files.file.mimetype,
+                size: req.files.file.size,
+                img: Buffer.from(encImg, 'base64')
+            };
+        }
+        
+        ordersCollection.insertOne({ name, email, serviceName, description, price, img })
             .then(result => {
-                res.send(result.insertedCount > 0)
+                res.send(result.insertedCount > 0);
             })
     });
 
     // Show all Orders
-    app.get('/orders', (req, res) => {
-        ordersCollection.find({})
-            .toArray((err, documents) => {
-                res.send(documents);
-            })
-    })
+    // app.get('/orders', (req, res) => {
+        
+    // })
 
     // Add new Service
     app.post('/addService', (req, res) => {
-        const file = req.files.file;
         const title = req.body.title;
         const description = req.body.description;
         
-        const newImg = file.data;
-        const encImg = newImg.toString('base64');
+        if(req.files){
+            const file = req.files.file;
 
-        var img = {
-            contentType: req.files.file.mimetype,
-            size: req.files.file.size,
-            img: Buffer.from(encImg, 'base64')
-        };
+            const newImg = file.data;
+            const encImg = newImg.toString('base64');
+
+            var img = {
+                contentType: req.files.file.mimetype,
+                size: req.files.file.size,
+                img: Buffer.from(encImg, 'base64')
+            };
+        }
 
         servicesCollection.insertOne({ title, description, img })
             .then(result => {
