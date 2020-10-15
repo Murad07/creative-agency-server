@@ -107,7 +107,6 @@ client.connect(err => {
 
     // Update Order status
     app.patch('/updateStatus/:id', (req, res) => {
-        console.log('c: ', req.body.status);
     ordersCollection
       .updateOne(
         { _id: ObjectId(req.params.id) },
