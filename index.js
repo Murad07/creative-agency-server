@@ -75,6 +75,7 @@ client.connect(err => {
         const serviceName = req.body.serviceName;
         const description = req.body.description;
         const price = req.body.price;
+        const status = req.body.status;
         
         if(req.files){
             const file = req.files.file;
@@ -88,7 +89,7 @@ client.connect(err => {
             };
         }
         
-        ordersCollection.insertOne({ name, email, serviceName, description, price, img })
+        ordersCollection.insertOne({ name, email, serviceName, description, price, status, img })
             .then(result => {
                 res.send(result.insertedCount > 0);
             })
