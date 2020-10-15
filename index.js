@@ -4,6 +4,7 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const { json } = require('express');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectID;
 require('dotenv').config()
 
 
@@ -94,6 +95,31 @@ client.connect(err => {
                 res.send(result.insertedCount > 0);
             })
     });
+
+
+    // Show all Orders
+    app.get('/allOrders', (req, res) => {
+        ordersCollection.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    // Update Order status
+    app.patch('/updateStatus/:id', (req, res) => {
+        console.log('c: ', req.body.status);
+    ordersCollection
+      .updateOne(
+        { _id: ObjectId(req.params.id) },
+
+        {
+          $set: { status: req.body.status },
+        }
+      )
+      .then((result) => {
+        res.send(result.modifiedCount > 0);
+      });
+  });
 
 
     // Add new Service
