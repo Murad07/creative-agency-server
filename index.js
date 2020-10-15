@@ -20,9 +20,6 @@ app.use(fileUpload());
 
 const port = 5000;
 
-app.get('/', (req, res) => {
-    res.send("hello from db it's working working")
-})
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
@@ -31,6 +28,9 @@ client.connect(err => {
     const reviewsCollection = client.db("creativeAgency").collection("reviews");
     const adminsCollection = client.db("creativeAgency").collection("admins");
 
+    app.get('/', (req, res) => {
+        res.send("hello from db it's working working")
+    })
 
     // Add a new Admin
     app.post('/addAdmin', (req, res) => {
