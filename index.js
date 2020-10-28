@@ -21,8 +21,8 @@ app.use(fileUpload());
 const port = 5000;
 
 const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 });
 
 client.connect(err => {
@@ -49,7 +49,7 @@ client.connect(err => {
                 res.send(admins.length > 0);
             })
     })
-    
+
     // Add a new Review
     app.post('/addReview', (req, res) => {
         const review = req.body;
@@ -76,8 +76,8 @@ client.connect(err => {
         const description = req.body.description;
         const price = req.body.price;
         const status = req.body.status;
-        
-        if(req.files){
+
+        if (req.files) {
             const file = req.files.file;
             const newImg = file.data;
             const encImg = newImg.toString('base64');
@@ -88,7 +88,7 @@ client.connect(err => {
                 img: Buffer.from(encImg, 'base64')
             };
         }
-        
+
         ordersCollection.insertOne({ name, email, serviceName, description, price, status, img })
             .then(result => {
                 res.send(result.insertedCount > 0);
@@ -106,26 +106,26 @@ client.connect(err => {
 
     // Update Order status
     app.patch('/updateStatus/:id', (req, res) => {
-    ordersCollection
-      .updateOne(
-        { _id: ObjectId(req.params.id) },
+        ordersCollection
+            .updateOne(
+                { _id: ObjectId(req.params.id) },
 
-        {
-          $set: { status: req.body.status },
-        }
-      )
-      .then((result) => {
-        res.send(result.modifiedCount > 0);
-      });
-  });
+                {
+                    $set: { status: req.body.status },
+                }
+            )
+            .then((result) => {
+                res.send(result.modifiedCount > 0);
+            });
+    });
 
 
     // Add new Service
     app.post('/addService', (req, res) => {
         const title = req.body.title;
         const description = req.body.description;
-        
-        if(req.files){
+
+        if (req.files) {
             const file = req.files.file;
 
             const newImg = file.data;
@@ -146,23 +146,23 @@ client.connect(err => {
 
     // Show specifiq user orders
     app.get('/servicesList/:email', (req, res) => {
-    ordersCollection
-      .find({ email: req.params.email })
-      .toArray((err, documents) => {
-        res.send(documents);
-      });
-  });
+        ordersCollection
+            .find({ email: req.params.email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            });
+    });
 
-  // Show specifiq user orders by service name
+    // Show specifiq user orders by service name
     app.get('/orderByName', (req, res) => {
         const title = req.query.title;
         servicesCollection
-        .find({ title:  { $regex: title }})
-        .toArray((err, documents) => {
-            res.send(documents[0]);
-        });
-  });
-    
+            .find({ title: { $regex: title } })
+            .toArray((err, documents) => {
+                res.send(documents[0]);
+            });
+    });
+
 
     // Show all Services
     app.get('/services', (req, res) => {
@@ -173,9 +173,11 @@ client.connect(err => {
     })
 });
 
-// check
+// check it
 app.get('/', (req, res) => {
-  res.send("hello from db it's working 1");
+    res.send("hello from db it's working 1");
 });
 
 app.listen(process.env.PORT || port);
+
+
